@@ -1,0 +1,7 @@
+*.backup.*
+*.log
+.DS_Store
+
+# Local machine overrides should not be committed.
+local/
+*.local

@@ -1,0 +1,91 @@
+"$schema" = "https://starship.rs/config-schema.json"
+
+palette = "tokyo_night"
+add_newline = false
+command_timeout = 1000
+
+format = """
+$directory$git_branch$git_status$custom$cmd_duration$status\
+$line_break\
+$character"""
+
+right_format = "$conda$time"
+continuation_prompt = "[∙](blue) "
+
+[palettes.tokyo_night]
+bg = "#1a1b26"
+fg = "#c0caf5"
+blue = "#7aa2f7"
+cyan = "#7dcfff"
+comment = "#565f89"
+green = "#9ece6a"
+yellow = "#e0af68"
+red = "#f7768e"
+purple = "#bb9af7"
+
+[directory]
+format = "[ $path]($style)[$read_only]($read_only_style)"
+style = "bold blue"
+read_only = " "
+read_only_style = "red"
+truncation_length = 4
+truncate_to_repo = false
+home_symbol = "~"
+
+[conda]
+format = "[󰌠 $environment]($style)[  ](comment)"
+style = "bold cyan"
+ignore_base = false
+
+[git_branch]
+format = "[  ](comment)[ $branch]($style)"
+style = "bold purple"
+
+[git_status]
+format = "[  ](comment)[$all_status$ahead_behind]($style)"
+style = "yellow"
+conflicted = "󰞇${count} "
+ahead = "⇡${count} "
+behind = "⇣${count} "
+diverged = "⇕⇡${ahead_count}⇣${behind_count} "
+up_to_date = ""
+untracked = "${count} "
+stashed = "󰆓${count} "
+modified = "󰏫${count} "
+staged = "${count} "
+renamed = "${count} "
+deleted = "${count} "
+
+[custom.tmux]
+when = '[[ -n "$TMUX" ]]'
+command = 'tmux display-message -p "#S:#I.#P"'
+format = "[  ](comment)[ $output]($style)"
+style = "bold green"
+
+[time]
+disabled = false
+format = "[ $time]($style)"
+style = "blue"
+time_format = "%Y-%m-%d %H:%M:%S"
+utc_time_offset = "local"
+
+[cmd_duration]
+min_time = 1000
+format = "[  ](comment)[󱎫 $duration]($style)"
+style = "bold yellow"
+show_milliseconds = false
+
+[status]
+disabled = false
+format = "[  ](comment)[󰅚 $status]($style)"
+style = "bold red"
+map_symbol = false
+
+[character]
+format = "$symbol "
+success_symbol = "[❯](bold blue)"
+error_symbol = "[❯](bold red)"
+vimcmd_symbol = "[❮](bold green)"
+vimcmd_visual_symbol = "[❮](bold yellow)"
+vimcmd_replace_symbol = "[❮](bold red)"
+vimcmd_replace_one_symbol = "[❮](bold red)"
