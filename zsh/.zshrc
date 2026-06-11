@@ -41,6 +41,44 @@ if command -v eza >/dev/null 2>&1; then
   alias tree='eza --icons=auto --group-directories-first --tree'
 fi
 
+proxyon() {
+  local proxy_addr="${PROXY_ADDR:-http://127.0.0.1:7890}"
+  local quiet=0
+  local arg
+
+  for arg in "$@"; do
+    if [[ "$arg" == "quiet" ]]; then
+      quiet=1
+    else
+      proxy_addr="$arg"
+    fi
+  done
+
+  export http_proxy="$proxy_addr"
+  export https_proxy="$proxy_addr"
+  export HTTP_PROXY="$proxy_addr"
+  export HTTPS_PROXY="$proxy_addr"
+  export no_proxy="${NO_PROXY_DEFAULT:-localhost,127.0.0.1,::1,192.168.0.0/16,10.0.0.0/8}"
+  export NO_PROXY="$no_proxy"
+
+  if (( ! quiet )); then
+    print -P "%F{green}[Proxy ON]%f $proxy_addr"
+    if command -v curl >/dev/null 2>&1; then
+      printf "Checking connectivity... "
+      if curl -I -s --connect-timeout 2 https://www.google.com >/dev/null; then
+        print -P "%F{green}SUCCESS%f"
+      else
+        print -P "%F{red}FAILED%f"
+      fi
+    fi
+  fi
+}
+
+proxyoff() {
+  unset http_proxy https_proxy HTTP_PROXY HTTPS_PROXY no_proxy NO_PROXY
+  print -P "%F{red}[Proxy OFF]%f"
+}
+
 if command -v fzf >/dev/null 2>&1; then
   FZF_BIN="$(command -v fzf)"
   FZF_BASE="${FZF_BASE:-${FZF_BIN:h:h}/share/fzf}"
