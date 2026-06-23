@@ -8,9 +8,6 @@ Portable terminal dotfiles for the active zsh setup.
 - `tmux/.tmux.conf`: mouse support and truecolor.
 - `starship/.config/starship.toml`: Tokyo Night prompt with Nerd Font symbols.
 - `conda/.condarc`: conda-forge channels and `changeps1: false`.
-- `yazi/.config/yazi/yazi.toml`: markdown preview, MIME fetchers, and local video opener.
-- `yazi/.config/yazi/package.toml`: Yazi plugin dependencies.
-- `yazi/.local/bin/yazi-localplay`: temporary directory HTTP server for video preview.
 - `install.sh`: backs up existing files and symlinks these configs into `$HOME`.
 
 ## Expected Tools
@@ -24,11 +21,6 @@ The shell config assumes these tools are available on `PATH` when you want their
 - `zoxide`
 - `eza`
 - `conda`
-- `yazi`
-- `ya`
-- `glow`
-- `ffmpeg`
-- `ffprobe`
 
 The current setup installs these through a conda environment named `shell-tools`, but the dotfiles do not require that exact path.
 
