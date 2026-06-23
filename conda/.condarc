@@ -1,8 +1,10 @@
 channels:
   - conda-forge
-mirrored_channels:
-  conda-forge:
-    - https://conda.anaconda.org/conda-forge
-    - https://prefix.dev/conda-forge
+channel_alias: https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud
+default_channels:
+  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main
+  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/r
+custom_channels:
+  conda-forge: https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud
 
 changeps1: false

@@ -1,0 +1,23 @@
+#:schema https://yazi-rs.github.io/schemas/yazi.json
+
+[opener]
+localplay = [
+  { run = "YAZI_LOCALPLAY_PORT=60154 /data3/yky/.local/bin/yazi-localplay %s1", orphan = true, desc = "Stream Directory to Local" },
+]
+
+[open]
+prepend_rules = [
+  { url = "*.mp4", use = [ "localplay", "edit" ] },
+]
+
+[plugin]
+prepend_fetchers = [
+  { url = "local://*", run = "mime-ext.local", prio = "high", group = "mime" },
+  { url = "remote://*", run = "mime-ext.remote", prio = "high", group = "mime" },
+]
+
+prepend_previewers = [
+  { mime = "text/markdown", run = 'piper -- CLICOLOR_FORCE=1 /data3/yky/miniforge3/envs/shell-tools/bin/glow -w=$w -s=dark "$1"' },
+  { url = "*.md", run = 'piper -- CLICOLOR_FORCE=1 /data3/yky/miniforge3/envs/shell-tools/bin/glow -w=$w -s=dark "$1"' },
+  { url = "*.markdown", run = 'piper -- CLICOLOR_FORCE=1 /data3/yky/miniforge3/envs/shell-tools/bin/glow -w=$w -s=dark "$1"' },
+]

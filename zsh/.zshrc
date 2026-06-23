@@ -1,6 +1,15 @@
 # User-local Zsh setup. This intentionally does not use Oh My Zsh.
 
-export PATH="$HOME/.local/bin:$PATH"
+export SHELL_TOOLS_ENV="${SHELL_TOOLS_ENV:-$HOME/miniforge3/envs/shell-tools}"
+if [[ -d "$SHELL_TOOLS_ENV/bin" ]]; then
+  export PATH="$SHELL_TOOLS_ENV/bin:$HOME/.local/bin:$PATH"
+else
+  export PATH="$HOME/.local/bin:$PATH"
+fi
+
+if [[ -x /usr/bin/lesspipe ]]; then
+  eval "$(SHELL=/bin/sh lesspipe)"
+fi
 
 HISTFILE="$HOME/.zsh_history"
 HISTSIZE=10000
@@ -11,6 +20,15 @@ setopt hist_ignore_dups
 setopt hist_ignore_space
 setopt auto_cd
 setopt interactive_comments
+unsetopt prompt_sp
+
+if command -v dircolors >/dev/null 2>&1; then
+  if [[ -r "$HOME/.dircolors" ]]; then
+    eval "$(dircolors -b "$HOME/.dircolors")"
+  else
+    eval "$(dircolors -b)"
+  fi
+fi
 
 autoload -Uz compinit
 zmodload zsh/complist
@@ -29,6 +47,7 @@ bindkey -M menuselect '^[[B' down-line-or-history
 bindkey -M menuselect '^[[C' forward-char
 bindkey -M menuselect '^[[D' backward-char
 bindkey '^I' menu-select
+unset zle_bracketed_paste
 
 if command -v starship >/dev/null 2>&1; then
   eval "$(starship init zsh)"
@@ -38,11 +57,23 @@ if command -v eza >/dev/null 2>&1; then
   alias ls='eza --icons=auto --group-directories-first'
   alias ll='eza --icons=auto --group-directories-first --long --git'
   alias la='eza --icons=auto --group-directories-first --long --all --git'
+  alias l='eza --icons=auto --group-directories-first'
   alias tree='eza --icons=auto --group-directories-first --tree'
+else
+  alias ls='ls --color=auto'
+  alias ll='ls -alF'
+  alias la='ls -A'
+  alias l='ls -CF'
 fi
 
+alias grep='grep --color=auto'
+alias fgrep='fgrep --color=auto'
+alias egrep='egrep --color=auto'
+
+export CLASH_PROXY_PORT="${CLASH_PROXY_PORT:-10800}"
+
 proxyon() {
-  local proxy_addr="${PROXY_ADDR:-http://127.0.0.1:7890}"
+  local proxy_addr="${PROXY_ADDR:-http://127.0.0.1:${CLASH_PROXY_PORT:-10800}}"
   local quiet=0
   local arg
 
@@ -56,8 +87,10 @@ proxyon() {
 
   export http_proxy="$proxy_addr"
   export https_proxy="$proxy_addr"
+  export all_proxy="${ALL_PROXY_ADDR:-socks5://127.0.0.1:${CLASH_PROXY_PORT:-10800}}"
   export HTTP_PROXY="$proxy_addr"
   export HTTPS_PROXY="$proxy_addr"
+  export ALL_PROXY="$all_proxy"
   export no_proxy="${NO_PROXY_DEFAULT:-localhost,127.0.0.1,::1,192.168.0.0/16,10.0.0.0/8}"
   export NO_PROXY="$no_proxy"
 
@@ -75,8 +108,20 @@ proxyon() {
 }
 
 proxyoff() {
-  unset http_proxy https_proxy HTTP_PROXY HTTPS_PROXY no_proxy NO_PROXY
+  unset http_proxy https_proxy all_proxy HTTP_PROXY HTTPS_PROXY ALL_PROXY no_proxy NO_PROXY
   print -P "%F{red}[Proxy OFF]%f"
+}
+
+proxy_on() {
+  proxyon "$@"
+}
+
+proxy_off() {
+  proxyoff
+}
+
+proxy_status() {
+  printf 'http_proxy: %s\nhttps_proxy: %s\nall_proxy: %s\n' "${http_proxy:-}" "${https_proxy:-}" "${all_proxy:-}"
 }
 
 if command -v fzf >/dev/null 2>&1; then
