@@ -1,0 +1,83 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+session="dufs"
+dufs_bin="${DUFS_BIN:-$HOME/.local/bin/dufs}"
+serve_dir="${WEBDAV_ROOT:-/data3/yky}"
+bind_addr="${WEBDAV_BIND:-127.0.0.1}"
+port="${WEBDAV_PORT:-60154}"
+
+usage() {
+  cat <<USAGE
+Usage: webdav {on|off|status|restart}
+
+Environment overrides:
+  WEBDAV_ROOT=/path/to/share
+  WEBDAV_BIND=127.0.0.1
+  WEBDAV_PORT=60154
+  DUFS_BIN=$HOME/.local/bin/dufs
+USAGE
+}
+
+ensure_dufs() {
+  if [[ ! -x "$dufs_bin" ]]; then
+    echo "dufs not found or not executable: $dufs_bin" >&2
+    exit 1
+  fi
+}
+
+start() {
+  ensure_dufs
+  if tmux has-session -t "$session" 2>/dev/null; then
+    echo "webdav already running in tmux session: $session"
+    status
+    return 0
+  fi
+
+  tmux new-session -d -s "$session" \
+    "$dufs_bin '$serve_dir' --bind '$bind_addr' --port '$port' --allow-all"
+  echo "webdav on: http://$bind_addr:$port -> $serve_dir"
+}
+
+stop() {
+  if tmux has-session -t "$session" 2>/dev/null; then
+    tmux kill-session -t "$session"
+    echo "webdav off"
+  else
+    echo "webdav is not running"
+  fi
+}
+
+status() {
+  if tmux has-session -t "$session" 2>/dev/null; then
+    echo "tmux session: $session"
+  else
+    echo "tmux session not running: $session"
+  fi
+
+  pgrep -af "$dufs_bin $serve_dir" || true
+  ss -ltnp "sport = :$port" || true
+}
+
+case "${1:-}" in
+  on)
+    start
+    ;;
+  off)
+    stop
+    ;;
+  restart)
+    stop >/dev/null || true
+    start
+    ;;
+  status)
+    status
+    ;;
+  -h|--help|help|"")
+    usage
+    ;;
+  *)
+    usage >&2
+    exit 2
+    ;;
+esac
