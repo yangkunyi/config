@@ -8,6 +8,7 @@ Portable terminal dotfiles for the active zsh setup.
 - `tmux/.tmux.conf`: mouse support and truecolor.
 - `starship/.config/starship.toml`: Tokyo Night prompt with Nerd Font symbols.
 - `conda/.condarc`: conda-forge channels and `changeps1: false`.
+- `alist/README.md`: user-level AList install and tmux service notes.
 - `install.sh`: backs up existing files and symlinks these configs into `$HOME`.
 
 ## Expected Tools
