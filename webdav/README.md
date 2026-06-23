@@ -5,7 +5,6 @@ This host serves `/data3/yky` with `dufs` for browser access and WebDAV.
 ## Service
 
 - Binary: `~/.local/bin/dufs`
-- Wrapper: `~/.local/bin/webdav`
 - Root: `/data3/yky`
 - Bind: `127.0.0.1`
 - Port: `60154`
@@ -16,19 +15,25 @@ The service intentionally binds to `127.0.0.1` because access should go through
 SSH port forwarding. Do not bind it to `0.0.0.0` while `--allow-all` is enabled
 unless external write access is explicitly intended.
 
-## Start And Stop
-
-```bash
-webdav on
-webdav off
-webdav status
-webdav restart
-```
-
-Equivalent manual start:
+## Start
 
 ```bash
 tmux new-session -d -s dufs '/data3/yky/.local/bin/dufs /data3/yky --bind 127.0.0.1 --port 60154 --allow-all'
+```
+
+## Stop
+
+```bash
+tmux kill-session -t dufs
+```
+
+## Status
+
+```bash
+tmux ls
+pgrep -af '/data3/yky/.local/bin/dufs /data3/yky'
+ss -ltnp 'sport = :60154'
+curl http://127.0.0.1:60154
 ```
 
 ## SSH Forwarding

@@ -9,7 +9,6 @@ Portable terminal dotfiles for the active zsh setup.
 - `starship/.config/starship.toml`: Tokyo Night prompt with Nerd Font symbols.
 - `conda/.condarc`: conda-forge channels and `changeps1: false`.
 - `webdav/README.md`: dufs WebDAV service notes.
-- `bin/.local/bin/webdav`: helper for `webdav on/off/status/restart`.
 - `install.sh`: backs up existing files and symlinks these configs into `$HOME`.
 
 ## Expected Tools
