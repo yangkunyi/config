@@ -8,7 +8,6 @@ Portable terminal dotfiles for the active zsh setup.
 - `tmux/.tmux.conf`: mouse support and truecolor.
 - `starship/.config/starship.toml`: Tokyo Night prompt with Nerd Font symbols.
 - `conda/.condarc`: conda-forge channels and `changeps1: false`.
-- `webdav/README.md`: dufs WebDAV service notes.
 - `install.sh`: backs up existing files and symlinks these configs into `$HOME`.
 
 ## Expected Tools
